@@ -4,10 +4,6 @@
   library(tm)
   library(e1071) 
   library(caret)
-  
-# Import Rds & Rda
-  features_rds_path = "classifier/features.rds"
-  naive_bayes_rda_path = "classifier/naive_bayes.rda"
 
 # Membersihkan data dan merubah data menjadi bentuk corpus
   clean_data <- function(data) {
@@ -38,12 +34,12 @@
 # Traning naive bayes model
   train_model <- function() {
     # Membaca training dataset
-    file_path <- read.csv("training_data.csv")
+    file_path <- "training/training.txt"
     data.source <- read_delim(file_path, delim = "\t")
     
     # Menambahkan kolom kelas pada data frame
     
-    data.source$sentiment <-  ifelse(data.source$Rating > 0, "Positive", "Negative")
+    data.source$sentiment <-  ifelse(data.source$score > 2, "Positive", "Negative")
     # Mengubah data menjadi factor
     data.source$sentiment <- as.factor(data.source$sentiment)
     
@@ -78,7 +74,7 @@
     length(freq_terms)
     
     # Save features yang sudah dibuat
-    saveRDS(freq_terms, file = features_rds_path)
+    saveRDS(freq_terms, file = "classifier/features.rds")
     
     # Mengaplikasikan fungsi convert_count untuk mendapatkan hasil training dan testing DTM
     data.dtm.train <- apply_feature(data.corpus.train, freq_terms)
@@ -88,7 +84,7 @@
     model <- naiveBayes(data.dtm.train, data.source.train$sentiment, laplace = 1)
     
     # Save Model yang sudah dibuat agar bisa dipakai di Shiny
-    save(model, file = naive_bayes_rda_path)
+    save(model, file = "classifier/naive_bayes.rda")
     
     # Membuat prediksi
     prediction <- predict(model, newdata = data.dtm.test) 
@@ -100,8 +96,8 @@
   
 # Prediksi sentimen
   predict_sentiment <- function(review) {
-    features <- readRDS(features_rds_path)
-    model <- get(load(naive_bayes_rda_path))
+    features <- readRDS("classifier/features.rds")
+    model <- get(load("classifier/naive_bayes.rda"))
     
     data.corpus <- clean_data(review)
     data.test <- apply_feature(data.corpus, features = features)
@@ -109,6 +105,3 @@
     
     return(data.frame(review = review, sentiment = prediction))
   }
-
-# Hapus komentar untuk traning data
-# train_model()

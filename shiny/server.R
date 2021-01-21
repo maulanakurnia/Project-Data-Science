@@ -18,7 +18,7 @@ server <- function(input, output) {
     withProgress({
       setProgress(message = "Sedang mengumpulkan data", value = 0)
       
-      result <- get_reviews(URL_Scrapping, 100, incProgress)
+      result <- get_reviews(URL_Scrapping, 20, incProgress)
     })
     
     return(result)
@@ -67,6 +67,6 @@ server <- function(input, output) {
   
   output$wordcloud <- renderPlot({
     data.corpus <- clean_data(data()$review)
-    wordcloud(data.corpus, min.freq = 30, max.words = 50)
+    wordcloud(data.corpus, min.freq = 30, max.words = 50, rot.per = 0.35, colors = brewer.pal(8,"Dark2"))
   })
 }
