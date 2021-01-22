@@ -21,7 +21,7 @@ get_reviews <- function(url, size = -1, incProgress = NULL) {
   reviewers <- c(reviewers, reviewer)
   
   if(!is.null(incProgress)) {
-    incProgress(10/size) 
+    incProgress(5/size) 
   }
   
   nextPage <- reviewPage %>%
@@ -58,7 +58,7 @@ get_reviews <- function(url, size = -1, incProgress = NULL) {
     }
     
     if(!is.null(incProgress)) {
-      incProgress(10/size) 
+      incProgress(5/size) 
     }
   }
   
@@ -69,5 +69,7 @@ get_reviews <- function(url, size = -1, incProgress = NULL) {
   
   print(paste(length(reviews), "data", "berhasil discrap"))
   
-  return(data.frame(reviewer = reviewers, review = reviews, stringsAsFactors = FALSE)[1 : size,])
+  data <- data.frame(reviewer = reviewers, review = reviews, stringsAsFactors = FALSE)[1 : size,]
+  
+  return(data)
 }
